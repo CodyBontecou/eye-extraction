@@ -1,6 +1,4 @@
-# Install required packages
-# !pip install torch torchvision transformers pillow opencv-python face-alignment
-
+import time
 import torch
 from torchvision import transforms
 from transformers import DetrFeatureExtractor, DetrForObjectDetection
@@ -9,14 +7,16 @@ import cv2
 import face_alignment
 import numpy as np
 
-# Load the DETR model for face detection
-feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50")
-model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
+from utils.capture_image import capture_image
 
-# Load the face alignment model for facial landmarks
-fa = face_alignment.FaceAlignment(
-    face_alignment.LandmarksType.TWO_D, device="cpu", flip_input=False
-)
+# Load the DETR model for face detection
+# feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50")
+# model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
+
+# # Load the face alignment model for facial landmarks
+# fa = face_alignment.FaceAlignment(
+#     face_alignment.LandmarksType.TWO_D, device="cpu", flip_input=False
+# )
 
 
 # Function to detect faces
@@ -87,12 +87,25 @@ def extract_eyes_from_image(image_path):
 
 
 # Example usage
-image_path = "images/blink.jpg"
-right_eye, left_eye = extract_eyes_from_image(image_path)
+# image_path = "images/blink.jpg"
+# right_eye, left_eye = extract_eyes_from_image(image_path)
 
-if right_eye is not None and left_eye is not None:
-    cv2.imwrite("right_eye.jpg", right_eye)
-    cv2.imwrite("left_eye.jpg", left_eye)
-    print("Eye regions extracted and saved.")
-else:
-    print("Failed to extract eye regions.")
+# if right_eye is not None and left_eye is not None:
+#     cv2.imwrite("right_eye.jpg", right_eye)
+#     cv2.imwrite("left_eye.jpg", left_eye)
+#     print("Eye regions extracted and saved.")
+# else:
+#     print("Failed to extract eye regions.")
+
+
+def main():
+    try:
+        while True:
+            capture_image()
+            time.sleep(5)  # Wait for 5 seconds
+    except KeyboardInterrupt:
+        print("Program stopped by user.")
+
+
+if __name__ == "__main__":
+    main()
