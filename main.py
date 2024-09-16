@@ -10,13 +10,13 @@ import numpy as np
 from utils.capture_image import capture_image
 
 # Load the DETR model for face detection
-# feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50")
-# model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
+feature_extractor = DetrFeatureExtractor.from_pretrained("facebook/detr-resnet-50")
+model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
 
-# # Load the face alignment model for facial landmarks
-# fa = face_alignment.FaceAlignment(
-#     face_alignment.LandmarksType.TWO_D, device="cpu", flip_input=False
-# )
+# Load the face alignment model for facial landmarks
+fa = face_alignment.FaceAlignment(
+    face_alignment.LandmarksType.TWO_D, device="cpu", flip_input=False
+)
 
 
 # Function to detect faces
@@ -86,23 +86,26 @@ def extract_eyes_from_image(image_path):
     return right_eye, left_eye
 
 
-# Example usage
-# image_path = "images/blink.jpg"
-# right_eye, left_eye = extract_eyes_from_image(image_path)
-
-# if right_eye is not None and left_eye is not None:
-#     cv2.imwrite("right_eye.jpg", right_eye)
-#     cv2.imwrite("left_eye.jpg", left_eye)
-#     print("Eye regions extracted and saved.")
-# else:
-#     print("Failed to extract eye regions.")
+def process_image(image_path):
+    right_eye, left_eye = extract_eyes_from_image(image_path)
+    if right_eye is not None and left_eye is not None:
+        cv2.imwrite(f"{image_path}_right_eye.jpg", right_eye)
+        cv2.imwrite(f"{image_path}_left_eye.jpg", left_eye)
+        print(f"Eyes extracted and saved for {image_path}")
+        return True
+    else:
+        print(f"Failed to extract eyes from {image_path}")
+        return False
 
 
 def main():
     try:
         while True:
             capture_image()
-            time.sleep(5)  # Wait for 5 seconds
+            image_path = capture_image()
+            if image_path:
+                print("Processing image...")
+                process_image(image_path)
     except KeyboardInterrupt:
         print("Program stopped by user.")
 
